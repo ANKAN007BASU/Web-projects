@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;400&display=swap" rel="stylesheet">
+    <title>todos. by Ankan</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #444;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+            transition: background-color 0.3s, color 0.3s; /* Smooth transition */
+        }
+
+        h1 {
+            font-size: 6rem; /* Adjusted for mobile */
+            text-align: center;
+            opacity: 0.4;
+            transition: color 0.3s; /* Smooth transition for color */
+        }
+
+        form {
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 100%;
+            width: 100%;
+            max-width: 400px; /* Limit width on larger screens */
+        }
+
+        .input {
+            border: none;
+            font-size: 2rem;
+            padding: 1rem 2rem;
+            display: block;
+            width: 100%;
+            transition: background-color 0.3s, color 0.3s; /* Smooth transition */
+        }
+
+        .input::placeholder {
+            transition: color 0.3s; /* Smooth transition for placeholder color */
+        }
+
+        .input:focus {
+            outline: none; /* Remove default outline */
+            background-color: rgba(179, 131, 226, 0.2); /* Light background on focus */
+            color: #000; /* Change text color on focus */
+        }
+
+        .todos {
+            padding: 0;
+            margin: 0;
+            list-style-type: none;
+        }
+
+        .todos li {
+            border-top: 1px solid #e5e5e5;
+            cursor: pointer;
+            font-size: 1.5rem; /* Adjusted for mobile */
+            padding: 1rem 2rem;
+            transition: background-color 0.3s; /* Smooth transition for background */
+        }
+
+        .todos li.completed {
+            color: #b6b6b6;
+            text-decoration: line-through;
+        }
+
+        small {
+            color: #b5b5b5;
+            margin-top: 3rem;
+            text-align: center;
+        }
+
+   /* Hamburger Menu Styles */
+.hamburger {
+    position: fixed; 
+    top: 20px; 
+    left: 20px; 
+    cursor: pointer; 
+    z-index: 100; 
+    border: none; /* Remove default border */
+    background: transparent; /* Make background transparent */
+    font-size: 30px; 
+    padding: 10px; /* Add some padding for better click area */
+    transition: background-color 0.3s, transform 0.3s; /* Smooth transition for background and transform */
+}
+
+/* Theme-specific colors for hamburger icon */
+body.theme-light .hamburger {
+    color: #ffb3c1; /* Match with light theme h1 color */
+}
+
+body.theme-dark .hamburger {
+    color: #a3c4d1; /* Match with dark theme h1 color */
+}
+
+body.theme-lavender .hamburger {
+    color: #b79ce1; /* Match with lavender theme h1 color */
+}
+
+body.theme-mint .hamburger {
+    color: #32bf95; /* Match with mint theme h1 color */
+}
+
+body.theme-coral .hamburger {
+    color: #ff9b88; /* Match with coral theme h1 color */
+}
+
+body.theme-aqua .hamburger {
+    color: #66c9cf; /* Match with aqua theme h1 color */
+}
+
+body.theme-emerald .hamburger {
+    color: #388e3c; /* Match with emerald theme h1 color */
+}
+
+body.theme-cobalt .hamburger {
+    color: #4c6ef5; /* Match with cobalt theme h1 color */
+}
+
+
+/* Settings Menu Styles */
+.settings-menu { 
+    display: none; 
+    position: absolute; 
+    top: 90px; 
+    left: 20px; 
+    width: 300px; /* Default width for larger screens */
+    box-shadow: 0px 4px 10px rgba(0,0,0,.2); 
+    overflow: hidden;
+    background-color: #f4f3f3; /* White background */
+}
+
+/* For mobile screens (up to 600px wide) */
+@media (max-width: 600px) {
+    .settings-menu { 
+        width: 250px; /* Smaller width for mobile screens */
+    }
+}
+
+
+.settings-menu.active { 
+    display: block; /* Show menu when active */  
+} 
+
+.settings-menu h3 {
+    margin: 0;
+    padding: 10px;
+    background-color: rgba(179,131,226,0.2); /* Header background color */
+}
+
+.settings-menu p {
+    padding-left: 10px;
+}
+
+.settings-menu button { 
+    width: 100%; 
+    padding: 12px; 
+    text-align: left; 
+    border: none; 
+    cursor: pointer; 
+    font-family:'Poppins', sans-serif;
+    transition: background-color .3s ease-in-out;
+} 
+
+.settings-menu button:hover { 
+    background-color: rgba(179,131,226,.3); /* Highlight on hover */
+} 
+
+.close-btn { 
+    font-size: 20px; /* Adjustable font size */
+    cursor: pointer;  
+    float: right; /* Align to the right */
+    margin: 10px; /* Add margin for spacing */
+    color: #444; /* Color for better visibility */
+    transition: color 0.3s ease; /* Smooth transition for color change */
+} 
+
+.close-btn:hover {
+    color: rgb(19, 19, 19); /* Change color on hover */
+}
+.image-container {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    height: 200px; /* Set container height */
+  }
+
+  .rounded-image {
+    display: inline-block;
+    font-size: 100px; /* Adjust size of the emoji */
+    text-align: center;
+    line-height: 1;
+    border-radius: 50%; /* Make it circular */
+
+    padding: 20px; /* Add padding for better visual appeal */
+ 
+  }         /* Theme Styles */
+
+ /* Light Theme */
+body.theme-light {
+    background-color: #f3f1f7; /* Soft lavender pastel */
+    color: #4a4a5c; /* Gentle muted dark gray */
+}
+
+body.theme-light h1 {
+    color: #ffb3c1; /* Soft pastel pink */
+}
+
+body.theme-light .input {
+    background-color: #ffffff; /* Crisp white */
+    color: #4a4a5c; /* Muted dark gray */
+}
+
+body.theme-light .input::placeholder {
+    color: #d6c8d6; /* Soft lavender placeholder */
+}
+
+body.theme-light .todos li {
+    background-color: #ffffff; /* White background for todo items */
+}
+
+body.theme-light .settings-menu {
+    background-color: #ffffff; /* White background for settings menu */
+}
+
+/* Dark Theme */
+body.theme-dark {
+    background-color: #2b2f33; /* Deep charcoal with a hint of blue */
+    color: #e0e0e0; /* Light off-white */
+}
+
+body.theme-dark h1 {
+    color: #a3c4d1; /* Soft pastel blue */
+}
+
+body.theme-dark .input {
+    background-color: #40494f; /* Dark slate gray */
+    color: #e0e0e0; /* Light text for dark mode */
+}
+
+body.theme-dark .input::placeholder {
+    color: #b0b9c1; /* Light grayish blue placeholder */
+}
+
+body.theme-dark .todos li {
+    background-color: #353b40; /* Soft charcoal gray for todo items */
+}
+
+body.theme-dark .settings-menu {
+    background-color: #353b40; /* Same as todo items for consistency */
+}
+
+/* Lavender Theme */
+body.theme-lavender {
+    background-color: #e3d7f1; /* Light lavender pastel */
+    color: #7c6b8e; /* Soft purple-gray for text */
+}
+
+body.theme-lavender h1 {
+    color: #b79ce1; /* Soft lavender with a hint of purple */
+}
+
+body.theme-lavender .input {
+    background-color: #ffffff; /* Clean white input fields */
+    color: #7c6b8e; /* Muted purple-gray text */
+}
+
+body.theme-lavender .input::placeholder {
+    color: #c0a4d8; /* Light lavender-gray placeholder */
+}
+
+body.theme-lavender .todos li {
+    background-color: #ffffff; /* White background for todo items */
+}
+
+body.theme-lavender .settings-menu {
+    background-color: #ffffff; /* White background for settings menu */
+}
+
+/* Mint Theme */
+body.theme-mint {
+    background-color: #d2eee1; /* Soft mint green pastel */
+    color: #4d9f6e; /* Muted deep mint green */
+}
+
+body.theme-mint h1 {
+    color: #32bf95; /* Light mint pastel for headings */
+}
+
+body.theme-mint .input {
+    background-color: #ffffff; /* White input fields */
+    color: #4d9f6e; /* Muted deep mint green text */
+}
+
+body.theme-mint .input::placeholder {
+    color: #c1e8c3; /* Light minty gray placeholder */
+}
+
+body.theme-mint .todos li {
+    background-color: #ffffff; /* White background for todo items */
+}
+
+body.theme-mint .settings-menu {
+    background-color: #ffffff; /* White background for settings menu */
+}
+
+/* Coral Theme */
+body.theme-coral {
+    background-color: #efdad2; /* Soft coral pastel */
+    color: #e87b6a; /* Warm coral red */
+}
+
+body.theme-coral h1 {
+    color: #ff9b88; /* Light coral peachy-pink */
+}
+
+body.theme-coral .input {
+    background-color: #fff6f1; /* Light coral input field */
+    color: #e87b6a; /* Warm coral text */
+}
+
+body.theme-coral .input::placeholder {
+    color: #f5d2c8; /* Soft coral gray placeholder */
+}
+
+body.theme-coral .todos li {
+    background-color: #fff6f1; /* Light coral background for todo items */
+}
+
+body.theme-coral .settings-menu {
+    background-color: #fff6f1; /* Soft coral background for settings */
+}
+
+/* Aqua Theme */
+body.theme-aqua {
+    background-color: #aef0f4; /* Soft aqua blue */
+    color: #317b83; /* Muted teal blue */
+}
+
+body.theme-aqua h1 {
+    color: #66c9cf; /* Light aqua for h1 */
+}
+
+body.theme-aqua .input {
+    background-color: #e5fcfc; /* Soft aqua input field */
+    color: #317b83; /* Muted teal text */
+}
+
+body.theme-aqua .input::placeholder {
+    color: #a3d8db; /* Light aqua placeholder */
+}
+
+body.theme-aqua .todos li {
+    background-color: #e5fcfc; /* Soft aqua background for todo items */
+}
+
+body.theme-aqua .settings-menu {
+    background-color: #e5fcfc; /* Soft aqua background for settings */
+}
+/* Emerald Theme */
+body.theme-emerald {
+    background-color: #93cf96; /* Deep emerald green background */
+    color: #ffffff; /* White text for contrast */
+}
+
+body.theme-emerald h1 {
+    color: #388e3c; /* Lighter emerald green for headings */
+}
+
+body.theme-emerald .input {
+    background-color: #83bb86; /* Soft emerald green for inputs */
+    color: #ffffff; /* White text in inputs */
+}
+
+body.theme-emerald .input::placeholder {
+    color: #5da461; /* Soft pastel emerald placeholder text */
+}
+
+body.theme-emerald .todos li {
+    background-color: #66bb6a; /* Light emerald green background for todo items */
+}
+
+body.theme-emerald .settings-menu {
+    background-color: #2e7d32; /* Deep emerald green background for settings */
+}
+/* Cobalt Theme */
+body.theme-cobalt {
+    background-color: #34516e; /* Deep cobalt blue background */
+    color: #ffffff; /* White text for contrast */
+}
+
+body.theme-cobalt h1 {
+    color: #4c6ef5; /* Lighter cobalt blue for headings */
+}
+
+body.theme-cobalt .input {
+    background-color: #a5b1e0; /* Soft cobalt blue for inputs */
+    color: #ffffff; /* White text in inputs */
+}
+
+body.theme-cobalt .input::placeholder {
+    color: #7087c1; /* Soft pale blue placeholder text */
+}
+
+body.theme-cobalt .todos li {
+    background-color: #4c6ef5; /* Soft cobalt blue background for todo items */
+}
+
+body.theme-cobalt .settings-menu {
+    background-color: #003366; /* Deep cobalt blue background for settings */
+}
+
+
+       .loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999; /* Ensure it's on top */
+}
+
+.loading-bar {
+    width: 80%;
+    height: 20px;
+    background-color: #c5c5c5;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 20px; /* Space between text and loading bar */
+}
+
+.loading-progress {
+    height: 100%;
+    width: 0%;
+    background-color: #0f0f0f; /* Progress color */
+    border-radius: 10px; /* Rounded corners for progress */
+    animation: loadAnimation 4s forwards; /* Animation for loading */
+}
+
+@keyframes loadAnimation {
+    from { width: 0%; }
+    to { width: 100%; }
+}
+/* Acknowledgment Button Styles */
+.acknowledgment-button {
+    width: calc(100% - 20px); /* Full width minus padding */
+    margin: 5px auto; /* Center button with margin for spacing */
+    padding: 12px; 
+    text-align: center; 
+    border-radius: 5px; /* Rounded corners for buttons */
+    border: none; 
+    cursor: pointer; 
+    font-family: 'Poppins', sans-serif;
+    background-color: rgba(179, 131, 226, 0.3); /* Light background */
+}
+
+.acknowledgment-button:hover {
+    background-color: rgba(179, 131, 226, 0.5); /* Highlight on hover */
+}
+
+/* Acknowledgment Popup Styles */
+.acknowledgment-popup {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); /* Center the popup */
+    min-width: 300px; /* Minimum width of popup */
+    max-width: 80%; /* Maximum width relative to viewport */
+    background-color: white; /* White background */
+    box-shadow: 0px 4px 10px rgba(0,0,0,.2); 
+    border-radius: 8px; 
+    padding: 20px; /* Padding inside the popup */
+    z-index: 200; /* Ensure it's above other elements */
+}
+
+.acknowledgment-popup h4 {
+    margin-top: 0; /* Remove top margin */
+}
+
+.close-btn {
+    font-size: 24px;  
+    cursor:pointer;  
+    float:right;
+}
+/* Sound Toggle Button Styles */
+.sound-toggle-button {
+    width: calc(100% - 20px); /* Full width minus padding */
+    margin: 5px auto; /* Center button with margin for spacing */
+    padding: 12px; 
+    text-align: center; 
+    border-radius: 5px; /* Rounded corners for buttons */
+    border: none; 
+    cursor: pointer; 
+    font-family: 'Poppins', sans-serif;
+    background-color: rgba(179, 131, 226, 0.3); /* Light background */
+}
+
+.sound-toggle-button:hover {
+    background-color: rgba(179, 131, 226, 0.5); /* Highlight on hover */
+}
+/* Welcome Screen Styles */
+.welcome-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #f7f7f7; /* Light background */
+    z-index: 9999; /* Above everything */
+    transition: transform 0.6s ease-in-out;
+}
+
+/* Hero Text */
+.hero-text h1 {
+    font-size: 3rem; /* Scales for mobile */
+    color: #333; /* Dark gray for contrast */
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Arrow Button */
+.arrow-button {
+    
+    color: #333;
+    border: none;
+    border-radius: 50px;
+    padding: 10px 20px;
+    font-size: 1.5rem;
+    cursor: pointer;
+   
+    transition: all 0.3s ease-in-out;
+}
+
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+    .hero-text h1 {
+        font-size: 2rem; /* Adjust text size for smaller screens */
+    }
+    .arrow-button {
+        font-size: 1.2rem;
+        padding: 8px 16px;
+    }
+}
+body.theme-light small {
+    color: #4a4a5c; /* Gentle muted dark gray */
+}
+
+/* Dark Theme */
+body.theme-dark small {
+    color: #e0e0e0; /* Light off-white */
+}
+
+/* Lavender Theme */
+body.theme-lavender small {
+    color: #7c6b8e; /* Soft purple-gray */
+}
+
+/* Mint Theme */
+body.theme-mint small {
+    color: #4d9f6e; /* Muted deep mint green */
+}
+
+/* Coral Theme */
+body.theme-coral small {
+    color: #e87b6a; /* Warm coral red */
+}
+
+/* Aqua Theme */
+body.theme-aqua small {
+    color: #317b83; /* Muted teal blue */
+}
+
+/* Emerald Theme */
+body.theme-emerald small {
+    color: #ffffff; /* White text for contrast */
+}
+
+/* Cobalt Theme */
+body.theme-cobalt small {
+    color: #ffffff; /* White text for contrast */
+}
+
+    </style>
+</head>
+<div class="loading-screen" id="loadingScreen">
+    <h1 style="font-size: 5rem; color: rgb(16, 16, 16);">todos.</h1>
+    <h2 style="font-size: 1.5rem; color: rgb(52, 52, 52);">By Ankan</h2>
+    <div class="loading-bar">
+        <div class="loading-progress"></div>
+    </div>
+</div>
+<div id="welcomeScreen" class="welcome-screen" style="display: none;">
+    <div class="hero-text">
+        <h1>Let's Start</h1>
+    </div>
+    <button id="startButton" class="arrow-button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up">
+            <polyline points="18 15 12 9 6 15"></polyline>
+        </svg>
+    </button>
+    
+
+</div>
+
+<body class="theme-light">
+    
+    <h1>todos.</h1>
+    <form id="form">
+        <input type="text" class="input" id="input" placeholder="Enter your todo...." autocomplete="off">
+        <ul class="todos" id="todos"></ul>
+    </form>
+    <small>Left click or tap to toggle completed. <br> Right click or tap and hold to delete todo</small>
+
+    <!-- Hamburger Menu -->
+    <div class="dropdown">
+      <button class="hamburger" onclick="toggleSettings()">☰</button>
+      <div class="settings-menu" id="settingsMenu">
+        <span class="close-btn" onclick="closeSettings()">✖</span>
+        <h3 style="background-color:#dedede; color:#0e0d0e;">Settings</h3>
+        <p style=" color:#0e0d0e;">Change Theme:</p>
+<button style="background-color:#ffb3c1;" onclick="setTheme('light')">Light</button>
+<button style="background-color:#2b2f33;" onclick="setTheme('dark')">Dark</button>
+<button style="background-color:#b79ce1;" onclick="setTheme('lavender')">Lavender</button>
+<button style="background-color:#32bf95;" onclick="setTheme('mint')">Mint</button>
+<button style="background-color:#ff9b88;" onclick="setTheme('coral')">Coral</button>
+<button style="background-color:#66c9cf;" onclick="setTheme('aqua')">Aqua</button>
+<button style="background-color:#2e7d32;;" onclick="setTheme('emerald ')">emerald </button>
+<button style="background-color:#003366;" onclick="setTheme('cobalt')">cobalt</button>
+
+        <button class="acknowledgment-button" onclick="toggleAcknowledgment()"style="background-color:#dedede; color:#0e0d0e;">Acknowledgment</button>
+        
+    </div>
+ 
+
+
+<!-- Acknowledgment Popup -->
+<div class="acknowledgment-popup" id="acknowledgmentPopup">
+    <span class="close-btn" onclick="toggleAcknowledgment()">✖</span>
+    <h4 style="text-align: center;">Acknowledgment</h4>
+<div class="image-container">
+    <span class="rounded-image">😊</span>
+</div>
+
+
+    <p>Hi Im Ankan Basu 😁 and I thank you from the depths of my heart for embracing my very first app! 🌟 Your unwavering support means everything to me, and I am grateful for each and every one of you. I sincerely appreciate your encouragement🌿. <p>
+    <p>If you have any feedback, please let me know!</p>
+    <p>You can mail me at <a href="mailto:ankanbasupiku@gmail.com">ankanbasupiku@gmail.com</a>.</p>
+
+    <!-- Social media links -->
+    <div class="social-links">
+        <a href="https://www.instagram.com/ankan7188?igsh=MWJpZGF3eHVvaHMxNw==" target="_blank">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/120px-Instagram_icon.png" alt="Instagram" style="width: 30px; height: 30px; margin-right: 10px;">
+        </a>
+    </div>
+</div>
+
+
+    </div>
+
+    <script>
+        
+// Define the music file
+const musicPath = "C:/Users/Ankan/OneDrive/Desktop/index/public/index.mp3";
+const audio = new Audio(musicPath);
+audio.play();
+
+let backgroundMusic = new Audio(musicPath);
+backgroundMusic.loop = true; // Play in a loop
+let isMusicOn = true;
+backgroundMusic.volume = 0.3; 
+
+// Function to toggle music on or off
+function toggleMusic() {
+    const musicButton = document.getElementById('musicToggle');
+    if (isMusicOn) {
+        backgroundMusic.pause(); // Pause the music
+        musicButton.innerText = "Music: Off";
+        isMusicOn = false;
+    } else {
+        backgroundMusic.play(); // Play the music
+        musicButton.innerText = "Music: On";
+        isMusicOn = true;
+    }
+}
+let userInteracted = false;
+
+// Function to start the music after interaction
+function startMusicAfterInteraction() {
+    if (!userInteracted) {
+        backgroundMusic.play(); // Play the music
+        isMusicOn = true; // Update the music state
+        const musicButton = document.getElementById('musicToggle');
+        musicButton.innerText = "Music: On"; // Update the button state
+        userInteracted = true; // Mark as interacted
+    }
+}
+
+// Add an event listener to detect user interaction
+document.addEventListener('click', startMusicAfterInteraction);
+document.addEventListener('keydown', startMusicAfterInteraction);
+
+// Automatically play music after the loading screen ends
+function onLoadingScreenEnd() {
+    backgroundMusic.play(); // Start playing the music
+    isMusicOn = true; // Update music state
+    const musicButton = document.getElementById('musicToggle');
+    musicButton.innerText = "Music: On"; // Reflect the state in the button
+}
+
+// Add event listener to start music after the loading screen ends
+setTimeout(() => {
+    document.getElementById('loadingScreen').style.display = 'none';
+    onLoadingScreenEnd(); // Call function to start music
+}, 4000);
+
+
+/*----------------------------------------------------------------------------------------*/
+ 
+
+        function toggleAcknowledgment() {
+    const popup = document.getElementById('acknowledgmentPopup');
+    popup.style.display = (popup.style.display === 'block') ? 'none' : 'block';
+}
+
+      const form = document.getElementById('form');
+      const input = document.getElementById('input');
+      const todosUL = document.getElementById('todos');
+
+      const todos = JSON.parse(localStorage.getItem('todos'));
+
+      if (todos) {
+          todos.forEach(todo => addTodo(todo));
+      }
+
+      form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          addTodo();
+      });
+
+      function addTodo(todo) {
+          let todoText = input.value;
+
+          if (todo) {
+              todoText = todo.text;
+          }
+
+          if (todoText) {
+              const todoEl = document.createElement('li');
+              if (todo && todo.completed) {
+                  todoEl.classList.add('completed');
+              }
+
+              todoEl.innerText = todoText;
+
+              todoEl.addEventListener('click', () => {
+                  todoEl.classList.toggle('completed');
+                  updateLS();
+              });
+
+              todoEl.addEventListener('contextmenu', (e) => {
+                  e.preventDefault();
+                  todoEl.remove();
+                  updateLS();
+              });
+
+              todosUL.appendChild(todoEl);
+              input.value = '';
+              updateLS();
+          }
+      }
+
+      function updateLS() {
+          const todosEl = document.querySelectorAll('li');
+          const todos = [];
+
+          todosEl.forEach(todoEl => {
+              todos.push({
+                  text: todoEl.innerText,
+                  completed: todoEl.classList.contains('completed')
+              });
+          });
+
+          localStorage.setItem('todos', JSON.stringify(todos));
+      }
+      
+      function toggleSettings() {
+          const settingsMenu = document.getElementById('settingsMenu');
+          settingsMenu.classList.toggle('active');
+      }
+      
+      function closeSettings() {
+          const settingsMenu = document.getElementById('settingsMenu');
+          settingsMenu.classList.remove('active');
+      }
+      
+      function setTheme(theme) {
+          document.body.className = `theme-${theme}`;
+          
+          // Close the settings menu after changing theme
+          closeSettings(); 
+      }
+
+      // Close the dropdown if the user clicks outside of it
+      window.onclick = function(event) {
+          if (!event.target.matches('.hamburger')) {
+              closeSettings();
+          }
+      };
+      // Hide loading screen after animation
+      setTimeout(() => {
+    document.getElementById('loadingScreen').style.display = 'none';
+    onLoadingScreenEnd(); // Start music after the loading screen
+}, 4000);
+/*-------------------------------------------*/
+// JavaScript for Welcome Screen Transition
+const welcomeScreen = document.getElementById('welcomeScreen');
+const startButton = document.getElementById('startButton');
+
+// Event listener for the arrow button
+startButton.addEventListener('click', () => {
+    welcomeScreen.style.transform = 'translateY(-100%)'; // Slide the welcome screen up
+    setTimeout(() => {
+        welcomeScreen.style.display = 'none'; // Remove it after the animation
+    }, 700); // Match the CSS transition duration
+});
+// Function called when the loading screen ends
+function onLoadingScreenEnd() {
+    const loadingScreen = document.getElementById('loadingScreen');
+    loadingScreen.style.display = 'none'; // Hide loading screen
+    document.getElementById('welcomeScreen').style.display = 'flex'; // Show welcome screen
+}
+/*========================================================================================*/
+// Function to set the theme and store it in localStorage
+function setTheme(theme) {
+    document.body.className = `theme-${theme}`;
+    localStorage.setItem('theme', theme); // Save theme to localStorage
+
+    // Close the settings menu after changing theme
+    closeSettings();
+}
+
+// Function to load the theme from localStorage when the page loads
+function loadTheme() {
+    const storedTheme = localStorage.getItem('theme');
+    if (storedTheme) {
+        document.body.className = `theme-${storedTheme}`;
+    } else {
+        document.body.className = 'theme-light'; // Default theme if no theme is set
+    }
+}
+
+// Load the theme when the page is loaded
+window.onload = loadTheme;
+
+// Event listener to handle theme change
+document.querySelectorAll('.settings-menu button').forEach(button => {
+    button.addEventListener('click', function() {
+        const theme = this.textContent.trim().toLowerCase();
+        setTheme(theme);
+    });
+});
+
+// Close the settings menu if clicked outside
+window.onclick = function(event) {
+    if (!event.target.matches('.hamburger')) {
+        closeSettings();
+    }
+};
+
+// Function to toggle settings menu visibility
+function toggleSettings() {
+    const settingsMenu = document.getElementById('settingsMenu');
+    settingsMenu.classList.toggle('active');
+}
+
+// Function to close settings menu
+function closeSettings() {
+    const settingsMenu = document.getElementById('settingsMenu');
+    settingsMenu.classList.remove('active');
+}
+// Add an event listener for the beforeunload event
+window.addEventListener('beforeunload', function (event) {
+    // Set a confirmation message
+    const confirmationMessage = "Do you really want to leave?";
+    
+    // Standard way to show the confirmation dialog
+    event.returnValue = confirmationMessage; // For most browsers
+    return confirmationMessage; // For some older browsers
+});
+// Function to delete a todo item
+function deleteTodoItem(item) {
+    // Play the delete sound
+    const deleteSound = document.getElementById('deleteSound');
+    deleteSound.currentTime = 0; // Reset sound to start
+    deleteSound.play(); // Play the sound
+
+    // Remove the item from the DOM
+    item.remove();
+}
+
+// Adding event listeners for right-click on todo items
+document.querySelectorAll('.todos li').forEach(item => {
+    item.addEventListener('contextmenu', function(event) {
+        event.preventDefault(); // Prevent default context menu from appearing
+        deleteTodoItem(this); // Call delete function with the clicked item
+    });
+});
+
+    </script>
+</body>
+</html>
